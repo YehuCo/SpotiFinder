@@ -1,5 +1,8 @@
 #include <iostream>
 #include <string>
+#include <vector>
+#include "MergeSort.h"
+
 using namespace std;
 
 int main() {
@@ -23,6 +26,17 @@ int main() {
 
 	cout << "Songs containing the word " << word << " stored in the graph:" << endl;
 	// print list of songs from the graph
+
+	Sorter vec;
+	vec.list.push_back(Sorter::Song("yehuda", 0.5));
+	vec.list.push_back(Sorter::Song("emma", 0.8));
+	vec.list.push_back(Sorter::Song("seany", 0.3));
+	vec.list.push_back(Sorter::Song("mario", 0.2));
+	vec.mergeSort(vec.list, 0, vec.list.size() - 1);
+
+	for (int i = 0; i < vec.list.size(); i++) {
+		cout << vec.list[i].title << " " << vec.list[i].hotness << endl;
+	}
 
 	return 0;
 }
