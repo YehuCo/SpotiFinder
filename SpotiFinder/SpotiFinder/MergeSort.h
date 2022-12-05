@@ -11,12 +11,12 @@ struct Sorter {
 		
 		Song(string title, double hotness);
 	};
-public:
-	vector<Song> list;
+	vector<Song> songs;
 
-public:
-	void mergeSort(vector<Song>& arr, int left, int right);
-	void merge(vector<Song>& arr, int left, int mid, int right);
+	void mergeSort(int left, int right);
+	void merge(int left, int mid, int right);
+	void populateData();
+
 };
 
 Sorter::Song::Song(string title, double hotness) {
@@ -24,17 +24,17 @@ Sorter::Song::Song(string title, double hotness) {
 	this->hotness = hotness;
 }
 
-void Sorter::mergeSort(vector<Song>& arr, int left, int right) {
+void Sorter::mergeSort(int left, int right) {
 	if (left < right) {
 		int mid = left + (right - left) / 2;
-		mergeSort(arr, left, mid);
-		mergeSort(arr, mid + 1, right);
+		mergeSort(left, mid);
+		mergeSort(mid + 1, right);
 
-		merge(arr, left, mid, right);
+		merge(left, mid, right);
 	}
 }
 
-void Sorter::merge(vector<Song>& arr, int left, int mid, int right) {
+void Sorter::merge(int left, int mid, int right) {
 	// variables that store length of left half and length of right half
 	int l = mid - left + 1;
 	int r = right - mid;
@@ -44,21 +44,21 @@ void Sorter::merge(vector<Song>& arr, int left, int mid, int right) {
 	vector<Song> Y;
 
 	for (int i = 0; i < l; i++) {
-		X.push_back(arr[left + i]);
+		X.push_back(songs[left + i]);
 	}
 	for (int j = 0; j < r; j++) {
-		Y.push_back(arr[mid + 1 + j]);
+		Y.push_back(songs[mid + 1 + j]);
 	}
 
 	// merge the X and Y arrays into arr
 	int i = 0, j = 0, k = left;
 	while (i < l && j < r) {
 		if (X[i].hotness <= Y[j].hotness) {
-			arr[k] = X[i];
+			songs[k] = X[i];
 			i++;
 		}
 		else {
-			arr[k] = Y[j];
+			songs[k] = Y[j];
 			j++;
 		}
 		k++;
@@ -66,13 +66,41 @@ void Sorter::merge(vector<Song>& arr, int left, int mid, int right) {
 
 	// if there are remaining elements in either X or Y, append them
 	while (i < l) {
-		arr[k] = X[i];
+		songs[k] = X[i];
 		i++;
 		k++;
 	}
 	while (j < r) {
-		arr[k] = Y[j];
+		songs[k] = Y[j];
 		j++;
 		k++;
+	}
+}
+
+void Sorter::populateData() {
+	fstream myFile("C:/Users/yehud/source/repos/SpotiFinder - project 3/SpotiFinder/SpotiFinder/SpotiFinderSubset.csv");
+	string line;
+	string name;
+	string word;
+	double pop = 0;
+
+	getline(myFile, line, '\n');
+
+	for (int i = 0; i < 110000; i++) {
+		getline(myFile, line);
+		stringstream s(line);
+
+		while (getline(s, word, ',')) {
+			name = "";
+			if (word.substr(0, 2) == "0.") {
+				pop = stod(word);
+			}
+			else if (word.substr(0, 1) != "0") {
+				name += word;
+			}
+		}
+		if (name != "")
+			songs.push_back(Sorter::Song(name, pop));
+
 	}
 }
