@@ -3,6 +3,7 @@
 #include <vector>
 #include <fstream>
 #include <sstream>
+#include <unordered_map>
 using namespace std;
 
 // temporary class until we figure out how well handle the data
@@ -14,6 +15,7 @@ struct Sorter {
 		Song(string title, double hotness);
 	};
 	vector<Song> songList;
+	unordered_map<string, vector<Song>> songTable;
 
 	void mergeSort(int left, int right);
 	void merge(int left, int mid, int right);
@@ -88,7 +90,7 @@ void Sorter::populateData() {
 
 	getline(myFile, line, '\n');
 
-	for (int i = 0; i < 1000; i++) {
+	for (int i = 0; i < 10; i++) {
 		getline(myFile, line);
 		stringstream s(line);
 
