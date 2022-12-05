@@ -9,7 +9,7 @@ int main() {
 	string word;
 
 	// print welcome screen
-	cout << "Wlecome to SpotiFinder." << endl;
+	cout << "Welcome to SpotiFinder." << endl;
 	cout << "Please enter the word you'd like to use to find song titles: ";
 	cin >> word;
 
