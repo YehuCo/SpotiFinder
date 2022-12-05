@@ -1,9 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <fstream>
-#include <sstream>
-#include "MergeSort.h"
+#include "Sorter.h"
 using namespace std;
 
 int main() {
@@ -11,6 +9,8 @@ int main() {
 	Sorter songs;
 
 	songs.populateData();
+	songs.mergeSort(0, songs.songs.size() - 1);
+
 
 	string word;
 
