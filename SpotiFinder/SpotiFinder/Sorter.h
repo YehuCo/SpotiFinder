@@ -13,7 +13,7 @@ struct Sorter {
 		
 		Song(string title, double hotness);
 	};
-	vector<Song> songs;
+	vector<Song> songList;
 
 	void mergeSort(int left, int right);
 	void merge(int left, int mid, int right);
@@ -46,21 +46,21 @@ void Sorter::merge(int left, int mid, int right) {
 	vector<Song> Y;
 
 	for (int i = 0; i < l; i++) {
-		X.push_back(songs[left + i]);
+		X.push_back(songList[left + i]);
 	}
 	for (int j = 0; j < r; j++) {
-		Y.push_back(songs[mid + 1 + j]);
+		Y.push_back(songList[mid + 1 + j]);
 	}
 
 	// merge the X and Y arrays into arr
 	int i = 0, j = 0, k = left;
 	while (i < l && j < r) {
 		if (X[i].hotness >= Y[j].hotness) {
-			songs[k] = X[i];
+			songList[k] = X[i];
 			i++;
 		}
 		else {
-			songs[k] = Y[j];
+			songList[k] = Y[j];
 			j++;
 		}
 		k++;
@@ -68,19 +68,19 @@ void Sorter::merge(int left, int mid, int right) {
 
 	// if there are remaining elements in either X or Y, append them
 	while (i < l) {
-		songs[k] = X[i];
+		songList[k] = X[i];
 		i++;
 		k++;
 	}
 	while (j < r) {
-		songs[k] = Y[j];
+		songList[k] = Y[j];
 		j++;
 		k++;
 	}
 }
 
 void Sorter::populateData() {
-	fstream myFile("C:/Users/yehud/source/repos/SpotiFinder - project 3/SpotiFinder/SpotiFinder/SpotiFinderSubset.csv");
+	fstream myFile("SpotiFinderSubset.csv");
 	string line;
 	string name;
 	string word;
@@ -88,7 +88,7 @@ void Sorter::populateData() {
 
 	getline(myFile, line, '\n');
 
-	for (int i = 0; i < 110000; i++) {
+	for (int i = 0; i < 1000; i++) {
 		getline(myFile, line);
 		stringstream s(line);
 
@@ -102,6 +102,6 @@ void Sorter::populateData() {
 			}
 		}
 		if (name != "")
-			songs.push_back(Sorter::Song(name, pop));
+			songList.push_back(Sorter::Song(name, pop));
 	}
 }

@@ -9,8 +9,11 @@ int main() {
 	Sorter songs;
 
 	songs.populateData();
-	songs.mergeSort(0, songs.songs.size() - 1);
+	songs.mergeSort(0, songs.songList.size() - 1);
 
+	for (auto s : songs.songList) {
+		cout << s.title << ": " << s.hotness << endl;
+	}
 
 	string word;
 
