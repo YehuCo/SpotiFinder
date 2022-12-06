@@ -4,64 +4,38 @@
 #include <fstream>
 #include <sstream>
 #include <unordered_map>
+#include "Containers.h"
 using namespace std;
 
-// temporary class until we figure out how well handle the data
-struct Sorters {
-	struct Song {
-		string title;
-		double hotness;
-		
-		Song(string title, double hotness);
-	};
-	vector<Song> songList;
-	unordered_map<string, vector<Song>> songTable;
+// ----------MERGE SORT----------
+//Slides Module 6: Sorting
 
-	void mergeSort(int left, int right);
-	void merge(int left, int mid, int right);
-	void populateData();
-};
-
-Sorters::Song::Song(string title, double hotness) {
-	this->title = title;
-	this->hotness = hotness;
-}
-
-void Sorters::mergeSort(int left, int right) {
-	if (left < right) {
-		int mid = left + (right - left) / 2;
-		mergeSort(left, mid);
-		mergeSort(mid + 1, right);
-
-		merge(left, mid, right);
-	}
-}
-
-void Sorters::merge(int left, int mid, int right) {
+// helper function for merge sort; merges the two halves together
+void merge(vector<Containers::Song>& arr, int left, int mid, int right) {
 	// variables that store length of left half and length of right half
 	int l = mid - left + 1;
 	int r = right - mid;
-	
+
 	// the two sub arrays that'll be combined
-	vector<Song> X;
-	vector<Song> Y;
+	vector<Containers::Song> X;
+	vector<Containers::Song> Y;
 
 	for (int i = 0; i < l; i++) {
-		X.push_back(songList[left + i]);
+		X.push_back(arr[left + i]);
 	}
 	for (int j = 0; j < r; j++) {
-		Y.push_back(songList[mid + 1 + j]);
+		Y.push_back(arr[mid + 1 + j]);
 	}
 
 	// merge the X and Y arrays into arr
 	int i = 0, j = 0, k = left;
 	while (i < l && j < r) {
 		if (X[i].hotness >= Y[j].hotness) {
-			songList[k] = X[i];
+			arr[k] = X[i];
 			i++;
 		}
 		else {
-			songList[k] = Y[j];
+			arr[k] = Y[j];
 			j++;
 		}
 		k++;
@@ -69,49 +43,40 @@ void Sorters::merge(int left, int mid, int right) {
 
 	// if there are remaining elements in either X or Y, append them
 	while (i < l) {
-		songList[k] = X[i];
+		arr[k] = X[i];
 		i++;
 		k++;
 	}
 	while (j < r) {
-		songList[k] = Y[j];
+		arr[k] = Y[j];
 		j++;
 		k++;
 	}
 }
 
-void Sorters::populateData() {
-	fstream myFile("SpotiFinderSubset.csv");
-	string line;
-	string name;
-	string word;
-	double pop = 0;
+// merge sort function
+void MergeSortRecur(vector<Containers::Song>& arr, int left, int right) {
+	if (left < right) {
+		int mid = left + (right - left) / 2;
+		MergeSortRecur(arr, left, mid);
+		MergeSortRecur(arr, mid + 1, right);
 
-	getline(myFile, line, '\n');
-
-	for (int i = 0; i < 10; i++) {
-		getline(myFile, line);
-		stringstream s(line);
-
-		while (getline(s, word, ',')) {
-			name = "";
-			if (word.substr(0, 2) == "0.") {
-				pop = stod(word);
-			}
-			else if (word.substr(0, 1) != "0") {
-				name += word;
-			}
-		}
-		if (name != "")
-			songList.push_back(Sorters::Song(name, pop));
+		merge(arr, left, mid, right);
 	}
 }
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//~~~~~~~~~~~~~~~~~~~~~~~~~Quick Sort~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+vector<Containers::Song> MergeSort(vector<Containers::Song>& songList)
+{
+	vector<Containers::Song> sL = songList;
+	MergeSortRecur(sL, 0, sL.size() - 1);
+	return sL;
+}
 
-int partition(vector<Sorters::Song>& songList, int low, int high)
+// -----------QUICK SORT----------
+//Slides Module 6: Sorting
+
+// helper function for quick sort; sets the partition
+int partition(vector<Containers::Song>& songList, int low, int high)
 {
 	double pivot = songList[low].hotness;
 	int up = low, down = high;
@@ -137,7 +102,8 @@ int partition(vector<Sorters::Song>& songList, int low, int high)
 	return down;
 }
 
-void quickSortRecur(vector<Sorters::Song>& songList, int low, int high)
+// helper function for quick sort; recursivly sets the partition
+void quickSortRecur(vector<Containers::Song>& songList, int low, int high)
 {
 	if (low < high)
 	{
@@ -147,7 +113,10 @@ void quickSortRecur(vector<Sorters::Song>& songList, int low, int high)
 	}
 }
 
-void QuickSort(vector<Sorters::Song>& songList)
+// quick sort function
+vector<Containers::Song> QuickSort(vector<Containers::Song>& songList)
 {
-	quickSortRecur(songList, 0, songList.size() - 1);
+	vector<Containers::Song> sL = songList;
+	quickSortRecur(sL, 0, sL.size() - 1);
+	return sL;
 }
