@@ -43,7 +43,7 @@ Containers::Song::Song(string _name, string _artist, double _hotness)
 
 // populate the data into a temporary vector of songs
 void Containers::populateData() {
-	fstream myFile("SpotiFinderSubset.csv");
+	fstream myFile("ACTUAL DATASET FINAL DEFINITELY THIS ONE DO NOT USE ANYTHING ELSE.csv");
 	string line;
 	string name;
 	string phrase;
@@ -52,7 +52,7 @@ void Containers::populateData() {
 
 	getline(myFile, line, '\n');
 
-	for (int i = 0; i < 100000; i++) {
+	for (int i = 0; i < 200000; i++) {
 		getline(myFile, line);
 		stringstream s(line);
 

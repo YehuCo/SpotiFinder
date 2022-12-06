@@ -8,6 +8,7 @@
 using namespace std;
 
 // ----------MERGE SORT----------
+//Slides Module 6: Sorting
 
 // helper function for merge sort; merges the two halves together
 void merge(vector<Containers::Song>& arr, int left, int mid, int right) {
@@ -54,17 +55,25 @@ void merge(vector<Containers::Song>& arr, int left, int mid, int right) {
 }
 
 // merge sort function
-void MergeSort(vector<Containers::Song>& arr, int left, int right) {
+void MergeSortRecur(vector<Containers::Song>& arr, int left, int right) {
 	if (left < right) {
 		int mid = left + (right - left) / 2;
-		MergeSort(arr, left, mid);
-		MergeSort(arr, mid + 1, right);
+		MergeSortRecur(arr, left, mid);
+		MergeSortRecur(arr, mid + 1, right);
 
 		merge(arr, left, mid, right);
 	}
 }
 
+vector<Containers::Song> MergeSort(vector<Containers::Song>& songList)
+{
+	vector<Containers::Song> sL = songList;
+	MergeSortRecur(sL, 0, sL.size() - 1);
+	return sL;
+}
+
 // -----------QUICK SORT----------
+//Slides Module 6: Sorting
 
 // helper function for quick sort; sets the partition
 int partition(vector<Containers::Song>& songList, int low, int high)
@@ -105,7 +114,9 @@ void quickSortRecur(vector<Containers::Song>& songList, int low, int high)
 }
 
 // quick sort function
-void QuickSort(vector<Containers::Song>& songList)
+vector<Containers::Song> QuickSort(vector<Containers::Song>& songList)
 {
-	quickSortRecur(songList, 0, songList.size() - 1);
+	vector<Containers::Song> sL = songList;
+	quickSortRecur(sL, 0, sL.size() - 1);
+	return sL;
 }
