@@ -1,13 +1,13 @@
 #pragma once
 #include <string>
 #include <unordered_map>
+#include <set>
 #include <vector>
 #include <fstream>
 #include <sstream>
-
 using namespace std;
 
-class Containers
+struct Containers
 {
 	struct Song
 	{
@@ -19,19 +19,21 @@ class Containers
 		Song(string _name, string _artist, double _hotness);
 	};
 
-	static unordered_map<string, vector<Song&>> searchMap;
-	static vector<Song> songList;
+	unordered_map<string, vector<Song>> searchMap;
 
-public:
 	void populateData();
+	void removeNonAlphabeticCharacters(string& s);
 };
 
+// default constructor for song without an artist
 Containers::Song::Song(string _name, double _hotness)
 {
 	name = _name;
 	artist = "Artist Not Available";
 	hotness = _hotness;
 }
+
+// default constructor for song with an artist
 Containers::Song::Song(string _name, string _artist, double _hotness)
 {
 	name = _name;
@@ -39,31 +41,48 @@ Containers::Song::Song(string _name, string _artist, double _hotness)
 	hotness = _hotness;
 }
 
+// populate the data into a temporary vector of songs
 void Containers::populateData() {
 	fstream myFile("SpotiFinderSubset.csv");
 	string line;
 	string name;
+	string phrase;
 	string word;
-	double pop = 0;
+	double pop;
 
 	getline(myFile, line, '\n');
 
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < 112000; i++) {
 		getline(myFile, line);
 		stringstream s(line);
 
-		while (getline(s, word, ',')) {
+		while (getline(s, phrase, ',')) {
 			name = "";
-			if (word.substr(0, 2) == "0.") {
-				pop = stod(word);
+			if (phrase.substr(0, 2) == "0.") {
+				pop = stod(phrase);
 			}
-			else if (word.substr(0, 1) != "0") {
-				name += word;
+			else if (phrase.substr(0, 1) != "0") {
+				name += phrase;
 			}
 		}
 		if (name != "")
 		{
-			songList.push_back(Containers::Song(name, pop));
+			Containers::Song song(name, pop);
+			stringstream w(name);
+			while (getline(w, word, ' ')) {
+				removeNonAlphabeticCharacters(word);
+				searchMap[word].push_back(song);
+			}
+		}
+	}
+}
+
+// removes all non-alphabetic characters from the word to store it properly in the hash table
+void Containers::removeNonAlphabeticCharacters(string& s) {
+	for (int i = 0; i < s.size(); i++) {
+		if (s[i] < 'A' || s[i] > 'Z' && s[i] < 'a' || s[i] > 'z') {
+			s.erase(i, 1);
+			i--;
 		}
 	}
 }
